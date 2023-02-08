@@ -9,6 +9,8 @@
  ]]--
 -- 本脚本负责添加为编写代码服务的功能函数
 
+local unpack = unpack or table.unpack
+
 -- prequire 用于载入模块，如果模块不存在，返回空表
 local function prequire(name)
     local rst = {}
@@ -52,4 +54,26 @@ local function cs_calllua(luaFunName, ...)
     return luaFun(...)
 end
 
-return {prequire = prequire, cs_await = cs_await, cs_calllua = cs_calllua}
+-- Lua侧使用，可以像c#侧那样await一个UniTask
+local function await(unitask)
+    local _co = coroutine.running() or error ('this function must be run in coroutine')
+    local rets
+    local waiting = false
+    local function cb_func(...)
+        if waiting then
+            assert(coroutine.resume(_co, ...))
+        else
+            rets = {...}
+        end
+    end
+
+    unitask:LuaAwaiter(cb_func)
+    if rets == nil then
+        waiting = true
+        rets = {coroutine.yield()}
+    end
+
+    return unpack(rets)
+end
+
+return {prequire = prequire, cs_await = cs_await, cs_calllua = cs_calllua, await = await}

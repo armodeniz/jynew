@@ -564,7 +564,7 @@ namespace Jyx2
             LuaConfigToCsDispose();
         }
 
-        public static void LuaConfigToCsInit()
+        public async static void LuaConfigToCsInit()
         {
             LEnv = LuaManager.GetLuaEnv();
             List<string> ConfigList = LEnv.Global.GetInPath<List<string>>("Jyx2.ConfigMgr.ConfigList");
@@ -579,10 +579,13 @@ namespace Jyx2
             ShopTable = LEnv.Global.GetInPath<Dictionary<int, LShopConfig>>("Jyx2.ConfigMgr.Shop");
             SettingsTable = LEnv.Global.GetInPath<Dictionary<int, LSettingsConfig>>("Jyx2.ConfigMgr.Settings");
 
-            TestMethod();
+            await TestMethod();
         }
-        public static async UniTaskVoid TestMethod()
+        public static async UniTask TestMethod()
         {
+            Debug.Log("ut start.");
+            await  UniTask.Delay(TimeSpan.FromSeconds(4), ignoreTimeScale: false);
+            Debug.Log("ut end.");
         }
         public static void LuaConfigToCsDispose()
         {
