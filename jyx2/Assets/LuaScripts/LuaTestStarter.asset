@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 628b3246bd462f34e9527289a9820d27, type: 3}
   m_Name: LuaTestStarter
   m_EditorClassIdentifier: 
+  modId: jytest
   luaFiles:
-  - {fileID: 2811297602134710623, guid: b5edf54a684f17f4abee7a494f88c47a, type: 3}
   - {fileID: 2811297602134710623, guid: bf0ad537850e83d47ac7ca5286dad7b4, type: 3}

@@ -10,17 +10,13 @@
  */
  ]]--
 -- 封装一个简单的List类型
-local class = require("LuaClass")
+local Class = require("LuaClass")
+local LuaList = Class("LuaList")
 
-local LuaList = class("LuaList")
-
-LuaList.ctor = function(instance, ...)
-    instance.Count = 0
-    local args = table.pack(...)
-    for i = 1, args.n do
-        if args[i] ~= nil then
-            instance:Add(args[i])
-        end
+function LuaList:ctor()
+    self.Count = self.Count or 0
+    for i,v in ipairs(self) do
+        self.Count = math.max(self.Count, i)
     end
 end
 

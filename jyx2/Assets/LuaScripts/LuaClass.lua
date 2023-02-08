@@ -17,16 +17,17 @@ local function class(className, super) -- 类名className 父类super(可为空)
         -- 将父类设置为子类的元表，让子类访问父类成员
         setmetatable(clazz, { __index = super })
     end
+    clazz.__index = clazz
     -- new方法用来创建对象
-    clazz.new = function(...)
-        -- 构建一个对象
-        local instance = {}
-        -- 将对象元表设置为当前类，用来访问类当前类的元素
-        setmetatable(instance, { __index = clazz })
-        if clazz.ctor then
-            clazz.ctor(instance, ...)
+    function clazz:new(o)
+        o = o or {}
+        self.__index = self
+        setmetatable(o, self)
+        -- 可以自行设置ctor方法进行类的初始化
+        if o.ctor then
+            o:ctor()
         end
-        return instance
+        return o
     end
     return clazz
 end

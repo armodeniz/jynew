@@ -31,6 +31,16 @@ namespace Jyx2
     }
 
     /// <summary>
+    /// 用于给Lua传递参数
+    /// </summary>
+    [System.Serializable]
+    public class LuaParam
+    {
+        public string pname;
+        public string pvalue;
+    }
+
+    /// <summary>
     /// 提供Lua侧的MonoBehaviour
     /// </summary>
     [LuaCallCSharp]
@@ -39,7 +49,8 @@ namespace Jyx2
         // 绑定Lua脚本文件，但不利于Mod修改
         //public TextAsset luaScript;
         // 绑定Lua脚本路径，可以在Mod中覆盖
-        public string luaScriptFilePath;
+        public string luaFilePath;
+        public LuaParam[] luaParams;
         // 为Lua提供快速访问其他游戏对象的接口
         public Injection[] injections;
 
@@ -61,6 +72,14 @@ namespace Jyx2
         // 初始化，只会运行一次
         public async UniTask LuaInit()
         {
+            Debug.Log(luaFilePath);
+            // 检查是否填写了lua文件路径
+            if (String.IsNullOrWhiteSpace(luaFilePath))
+                return;
+            var luaFile = await ResLoader.LoadAsset<TextAsset>($"Assets/LuaScripts/{luaFilePath}.lua");
+            // 检查lua文件是否存在
+            if (luaFile == null)
+                return;
             // 为每个脚本设置一个独立的环境，可一定程度上防止脚本间全局变量、函数冲突。在独立的环境中，使用元表来访问Lua全局变量
             scriptEnv = luaEnv.NewTable();
 
@@ -75,9 +94,15 @@ namespace Jyx2
                 scriptEnv.Set(injection.name, injection.value);
             }
 
-            Debug.Log(luaScriptFilePath);
-            var luaFile = await ResLoader.LoadAsset<TextAsset>($"Assets/LuaScripts/{luaScriptFilePath}.lua");
-            luaEnv.DoString(Encoding.UTF8.GetBytes(luaFile.text), luaScriptFilePath, scriptEnv);
+            string luaParamStr = "";
+            foreach (var lp in luaParams)
+            {
+                luaParamStr = string.Format("{0}{1} = {2}\n", luaParamStr, lp.pname, lp.pvalue);
+            }
+
+            Encoding utf8 = Encoding.UTF8;
+            string luaFileStr = luaParamStr + utf8.GetString(utf8.GetBytes(luaFile.text));
+            luaEnv.DoString(luaFileStr, luaFilePath, scriptEnv);
             //luaEnv.DoString(luaScript.text, "LuaTestScript", scriptEnv);
 
             scriptEnv.Get("Start", out luaStart);
@@ -88,7 +113,7 @@ namespace Jyx2
         // 一个外部c#访问独立环境的简单接口
         public void DoString(string luaText)
         {
-            luaEnv.DoString(luaText, luaScriptFilePath, scriptEnv);
+            luaEnv.DoString(luaText, luaFilePath, scriptEnv);
         }
 
         async void Start()
@@ -124,7 +149,7 @@ namespace Jyx2
             luaOnDestroy = null;
             luaUpdate = null;
             luaStart = null;
-            scriptEnv.Dispose();
+            scriptEnv?.Dispose();
             injections = null;
         }
     }
