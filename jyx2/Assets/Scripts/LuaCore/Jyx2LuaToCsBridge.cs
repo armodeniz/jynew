@@ -579,7 +579,6 @@ namespace Jyx2
             ShopTable = LEnv.Global.GetInPath<Dictionary<int, LShopConfig>>("Jyx2.ConfigMgr.Shop");
             SettingsTable = LEnv.Global.GetInPath<Dictionary<int, LSettingsConfig>>("Jyx2.ConfigMgr.Settings");
 
-            await TestMethod();
         }
         public static async UniTask TestMethod()
         {

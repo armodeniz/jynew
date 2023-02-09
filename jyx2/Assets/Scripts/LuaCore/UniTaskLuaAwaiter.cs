@@ -15,6 +15,9 @@ using UnityEngine;
 
 namespace Jyx2
 {
+    /// <summary>
+    /// 让Lua侧可以await一个UniTask异步任务
+    /// </summary>
     [LuaCallCSharp]
     public static class UniTaskLuaAwaiter
     {
@@ -23,5 +26,12 @@ namespace Jyx2
             await ut;
             callback();
         }
+
+        public async static void LuaAwaiter(this YieldAwaitable ut, Action callback)
+        {
+            await ut;
+            callback();
+        }
+
     }
 }
