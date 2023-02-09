@@ -27,6 +27,12 @@ namespace Jyx2
             callback();
         }
 
+        public async static void LuaAwaiter(this UniTask<bool> ut, Action<bool> callback)
+        {
+            bool rst = await ut;
+            callback(rst);
+        }
+
         public async static void LuaAwaiter(this YieldAwaitable ut, Action callback)
         {
             await ut;

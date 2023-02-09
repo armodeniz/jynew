@@ -11,6 +11,8 @@
 
 local helpers = {}
 -- 
+helpers.__cname = "ItemConfig"
+
 function helpers.GetPic(cfg)
     return string.format("BuildSource/Items/%d.png", cfg.Id)
 end

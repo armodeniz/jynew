@@ -10,6 +10,9 @@
 -- 本脚本负责为ConfigMgr中的配置表添加专门的功能
 
 local helpers = {}
+
+helpers.__cname = "MapConfig"
+
 -- Map 表有一个不做初始化的项 ForceSetLeaveMusicId .此项为-1或nil则表示此项不起作用；如果值为正数则用此数代替OutMusic
 function helpers.GetOutMusic(cfg)
     if cfg.ForceSetLeaveMusicId == nil or cfg.ForceSetLeaveMusicId ==-1 then
