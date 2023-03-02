@@ -1,6 +1,7 @@
-local mm = -4
-local uu = -mm
-local pp = 0 - mm
-print(uu)
-print(math.random(0, 1//2 - 1))
+local test = CS.Jyx2.LuaToCsBridge.TestMethod
+local awaiter = test():GetAwaiter()
+if awaiter ~= nil then
+    print(awaiter.IsCompleted)
+end
+
 print("test end")

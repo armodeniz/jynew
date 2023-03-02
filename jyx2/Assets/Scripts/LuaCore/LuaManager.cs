@@ -33,7 +33,8 @@ namespace Jyx2
 
         public LuaManager() { }
 
-        private static bool IsInited()
+        public static bool IsInited()
+        //private static bool IsInited()
         {
             return _inited;
         }
